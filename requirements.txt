@@ -1,0 +1,5 @@
+aiogram==3.0.0
+python-dotenv==0.19.2
+SQLAlchemy==1.4.31
+psycopg2-binary==2.9.3
+
