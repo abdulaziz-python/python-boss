@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+<div id="content-main">
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="module aligned">
+            <div class="form-row">
+                <label for="message">Message:</label>
+                <textarea name="message" id="message" rows="5" cols="40" required></textarea>
+            </div>
+            <div class="form-row">
+                <label for="image_url">Image URL (optional):</label>
+                <input type="url" name="image_url" id="image_url">
+            </div>
+            <div class="form-row">
+                <label for="keyboard">Inline Keyboard (JSON format, optional):</label>
+                <textarea name="keyboard" id="keyboard" rows="5" cols="40"></textarea>
+            </div>
+        </fieldset>
+        <div class="submit-row">
+            <input type="submit" value="Send Broadcast" class="default" name="_send">
+        </div>
+    </form>
+</div>
+{% endblock %}
+
