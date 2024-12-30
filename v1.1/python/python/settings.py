@@ -101,4 +101,6 @@ MUTE_DURATION = 7200
 CSRF_TRUSTED_ORIGINS = [
     'https://www.8000-idx-moderator-1735212668681.cluster-blu4edcrfnajktuztkjzgyxzek.cloudworkstations.dev',
     'https://8000-idx-moderator-1735212668681.cluster-blu4edcrfnajktuztkjzgyxzek.cloudworkstations.dev',
+    'https://python-boss-robot.onrender.com',
+    'https://www.python-boss-robot.onrender.com',
 ]

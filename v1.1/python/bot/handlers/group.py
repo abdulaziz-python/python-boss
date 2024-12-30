@@ -297,22 +297,39 @@ async def why_muted(callback_query: types.CallbackQuery):
 async def on_user_join(event: types.ChatMemberUpdated):
     new_member = event.new_chat_member.user
     welcome_message = (
-        f"Safimizda yangi a'zo bor [{new_member.full_name}](tg://user?id={new_member.id}).\n\n"
-        f"{new_member.full_name}, siz bu guruhga qo'shilganingiz munosabati bilan guruh qoidalariga qat'iy rioya qilishingiz kerak!"
+        f"Assalomu alaykum, [{new_member.full_name}](tg://user?id={new_member.id})! 👋\n\n"
+        f"Guruhimizga xush kelibsiz. Iltimos, guruh qoidalari bilan tanishib chiqing va ularga rioya qiling."
     )
     
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=[
         [types.InlineKeyboardButton(text="Guruh qoidalari", url="https://t.me/python_ruless")]
     ])
     
-    await event.bot.send_message(event.chat.id, welcome_message, reply_markup=keyboard, parse_mode='Markdown')
+    sent_message = await event.bot.send_message(event.chat.id, welcome_message, reply_markup=keyboard, parse_mode='Markdown')
+    \
+    await event.bot.delete_message(event.chat.id, event.action_message.message_id)
+    
+    await asyncio.sleep(300)    
+    await event.bot.delete_message(event.chat.id, sent_message.message_id)
 
 @router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_MEMBER >> IS_NOT_MEMBER))
 async def on_user_leave(event: types.ChatMemberUpdated):
-    left_member = event.old_chat_member.user
-    leave_message = f"Foydalanuvchi [{left_member.full_name}](tg://user?id={left_member.id}) guruhni tark etdi."
-    
-    await event.bot.send_message(event.chat.id, leave_message, parse_mode='Markdown')
+    await event.bot.delete_message(event.chat.id, event.action_message.message_id)
+
+@router.message(F.new_chat_members)
+async def on_new_chat_members(message: types.Message):
+    await message.delete()
+
+@router.message(F.left_chat_member)
+async def on_left_chat_member(message: types.Message):
+    await message.delete()
+
+@router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_MEMBER >> IS_MEMBER))
+async def on_admin_status_change(event: types.ChatMemberUpdated):
+    if event.new_chat_member.status in ['creator', 'administrator']:
+        await save_group_admin(event.new_chat_member.user, event.chat)
+        logger.info(f"Yangi admin saqlandi: {event.new_chat_member.user.full_name} guruhda {event.chat.title}")
+
 
 @router.my_chat_member(ChatMemberUpdatedFilter(member_status_changed=IS_MEMBER >> IS_MEMBER))
 async def on_admin_status_change(event: types.ChatMemberUpdated):
